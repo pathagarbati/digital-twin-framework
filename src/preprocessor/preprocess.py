@@ -10,6 +10,7 @@ def preprocess(message):
     observations = []
 
     content = str(message.content)
+    lower_content = content.lower()
 
     # -------------------
     # Metadata
@@ -36,6 +37,8 @@ def preprocess(message):
     )
 
     contains_question = "?" in content
+
+    contains_exclamation = "!" in content
 
     contains_number = any(
         character.isdigit()
@@ -64,8 +67,6 @@ def preprocess(message):
         "xd"
 
     ]
-
-    lower_content = content.lower()
 
     contains_laughter = any(
 
@@ -112,205 +113,116 @@ def preprocess(message):
 
     )
 
+    # goodnight detection
+
+    goodnight_words = [
+
+        "goodnight",
+        "good night",
+        "gn",
+        "gnn"
+
+    ]
+
+    contains_goodnight = any(
+
+        word in lower_content
+
+        for word in goodnight_words
+
+    )
+
+    # goodmorning detection
+
+    goodmorning_words = [
+
+        "goodmorning",
+        "good morning",
+        "gm",
+        "gmm"
+
+    ]
+
+    contains_goodmorning = any(
+
+        word in lower_content
+
+        for word in goodmorning_words
+
+    )
+
+    # profanity detection
+
+    profanity_words = [
+
+        "fuck",
+        "fucking",
+        "shit",
+        "bitch",
+        "asshole",
+        "mc",
+        "bc",
+        "madarchod",
+        "behenchod",
+        "lund",
+        "chutiya",
+        "bsdk"
+
+    ]
+
+    contains_profanity = any(
+
+        word in lower_content
+
+        for word in profanity_words
+
+    )
+
     # -------------------
     # OBSERVATIONS
     # -------------------
 
-    observations.append(
+    observation_data = [
 
-        Observation(
-            category="metadata",
-            name="sender",
-            value=message.sender,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
+        ("metadata", "sender", message.sender),
+        ("metadata", "receiver", message.receiver),
+        ("metadata", "word_count", word_count),
+        ("metadata", "message_length", length),
+        ("metadata", "content_length", len(content)),
+        ("metadata", "message_type", message.message_type),
+        ("metadata", "platform", message.platform),
+
+        ("content", "contains_uppercase", contains_uppercase),
+        ("content", "contains_question", contains_question),
+        ("content", "contains_exclamation", contains_exclamation),
+        ("content", "contains_number", contains_number),
+        ("content", "contains_url", contains_url),
+        ("content", "contains_laughter", contains_laughter),
+        ("content", "contains_emoji", contains_emoji),
+        ("content", "contains_attachment", contains_attachment),
+        ("content", "contains_goodnight", contains_goodnight),
+        ("content", "contains_goodmorning", contains_goodmorning),
+        ("content", "contains_profanity", contains_profanity),
+
+    ]
+
+    for category, name, value in observation_data:
+
+        observations.append(
+
+            Observation(
+
+                category=category,
+                name=name,
+                value=value,
+                source=message.sender,
+                origin=message.platform,
+                conversation_id=message.conversation_id,
+                timestamp=message.timestamp
+
+            )
+
         )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="receiver",
-            value=message.receiver,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="word_count",
-            value=word_count,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="message_length",
-            value=length,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="content_length",
-            value=len(content),
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="message_type",
-            value=message.message_type,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="metadata",
-            name="platform",
-            value=message.platform,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_uppercase",
-            value=contains_uppercase,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_question",
-            value=contains_question,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_number",
-            value=contains_number,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_url",
-            value=contains_url,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_laughter",
-            value=contains_laughter,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_emoji",
-            value=contains_emoji,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
-
-    observations.append(
-
-        Observation(
-            category="content",
-            name="contains_attachment",
-            value=contains_attachment,
-            source=message.sender,
-            origin=message.platform,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-        )
-
-    )
 
     return observations
 
@@ -329,4 +241,5 @@ if __name__ == "__main__":
         print("\nOBSERVATIONS")
 
         for observation in observations:
+
             print(observation)
