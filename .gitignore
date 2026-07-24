@@ -1,0 +1,23 @@
+# datasets
+datasets/
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# databases
+*.db
+*.sqlite
+
+# exports
+*.html
+*.csv
+*.jsonl
+*.zip
+
+# environment
+.env
+
+# vscode
+.vscode/
