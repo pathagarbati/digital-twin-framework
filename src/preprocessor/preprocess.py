@@ -1,4 +1,5 @@
 import re
+import unicodedata
 
 from src.knowledge.observation import Observation
 from src.preprocessor.loader import load_json
@@ -10,10 +11,12 @@ def preprocess(message):
 
     content = str(message.content)
 
-    # Word count
+    # -------------------
+    # Metadata
+    # -------------------
+
     word_count = len(content.split())
 
-    # Message length
     if word_count <= 5:
         length = "short"
 
@@ -23,22 +26,22 @@ def preprocess(message):
     else:
         length = "long"
 
-    # Uppercase detection
+    # -------------------
+    # Content Analysis
+    # -------------------
+
     contains_uppercase = any(
         character.isupper()
         for character in content
     )
 
-    # Question detection
     contains_question = "?" in content
 
-    # Number detection
     contains_number = any(
         character.isdigit()
         for character in content
     )
 
-    # URL detection
     contains_url = bool(
 
         re.search(
@@ -48,7 +51,71 @@ def preprocess(message):
 
     )
 
-    # Sender
+    # laughter detection
+
+    laughter_words = [
+
+        "haha",
+        "hehe",
+        "lol",
+        "lmao",
+        "lmfao",
+        "rofl",
+        "xd"
+
+    ]
+
+    lower_content = content.lower()
+
+    contains_laughter = any(
+
+        word in lower_content
+
+        for word in laughter_words
+
+    )
+
+    # emoji detection
+
+    contains_emoji = any(
+
+        unicodedata.category(character)
+        == "So"
+
+        for character in content
+
+    )
+
+    # attachment detection
+
+    attachment_extensions = [
+
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".webp",
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".mp4",
+        ".mp3",
+        ".zip"
+
+    ]
+
+    contains_attachment = any(
+
+        extension in lower_content
+
+        for extension in attachment_extensions
+
+    )
+
+    # -------------------
+    # OBSERVATIONS
+    # -------------------
+
     observations.append(
 
         Observation(
@@ -63,7 +130,6 @@ def preprocess(message):
 
     )
 
-    # Receiver
     observations.append(
 
         Observation(
@@ -78,7 +144,6 @@ def preprocess(message):
 
     )
 
-    # Word Count
     observations.append(
 
         Observation(
@@ -93,7 +158,6 @@ def preprocess(message):
 
     )
 
-    # Message Length
     observations.append(
 
         Observation(
@@ -108,7 +172,6 @@ def preprocess(message):
 
     )
 
-    # Content Length
     observations.append(
 
         Observation(
@@ -123,7 +186,6 @@ def preprocess(message):
 
     )
 
-    # Message Type
     observations.append(
 
         Observation(
@@ -138,7 +200,6 @@ def preprocess(message):
 
     )
 
-    # Platform
     observations.append(
 
         Observation(
@@ -153,7 +214,6 @@ def preprocess(message):
 
     )
 
-    # Contains Uppercase
     observations.append(
 
         Observation(
@@ -168,7 +228,6 @@ def preprocess(message):
 
     )
 
-    # Contains Question
     observations.append(
 
         Observation(
@@ -183,7 +242,6 @@ def preprocess(message):
 
     )
 
-    # Contains Number
     observations.append(
 
         Observation(
@@ -198,13 +256,54 @@ def preprocess(message):
 
     )
 
-    # Contains URL
     observations.append(
 
         Observation(
             category="content",
             name="contains_url",
             value=contains_url,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_laughter",
+            value=contains_laughter,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_emoji",
+            value=contains_emoji,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_attachment",
+            value=contains_attachment,
             source=message.sender,
             origin=message.platform,
             conversation_id=message.conversation_id,
