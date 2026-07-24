@@ -5,11 +5,14 @@ class KnowledgeBase:
         self.observations = []
 
 
-
     def add_observation(self, observation):
 
         self.observations.append(observation)
 
+
+    def add_observations(self, observations):
+
+        self.observations.extend(observations)
 
 
     def get_observations(self):
@@ -17,17 +20,6 @@ class KnowledgeBase:
         return self.observations
 
 
+    def total_observations(self):
 
-if __name__=="__main__":
-
-    brain = KnowledgeBase()
-
-
-    brain.add_observation(
-
-        "Parth usually communicates casually."
-
-    )
-
-
-    print(brain.get_observations())
+        return len(self.observations)
