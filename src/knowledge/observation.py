@@ -8,5 +8,6 @@ class Observation:
     name: str
     value: object
     source: str
+    origin: str
     conversation_id: str
     timestamp: str

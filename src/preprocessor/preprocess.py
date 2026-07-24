@@ -6,57 +6,10 @@ def preprocess(message):
 
     observations = []
 
-    # sender
-    observations.append(
-
-        Observation(
-
-            category="metadata",
-            name="sender",
-            value=message.sender,
-            source=message.sender,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-
-        )
-
-    )
-
-    # receiver
-    observations.append(
-
-        Observation(
-
-            category="metadata",
-            name="receiver",
-            value=message.receiver,
-            source=message.sender,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-
-        )
-
-    )
-
-    # word count
-    observations.append(
-
-        Observation(
-
-            category="metadata",
-            name="word_count",
-            value=len(str(message.content).split()),
-            source=message.sender,
-            conversation_id=message.conversation_id,
-            timestamp=message.timestamp
-
-        )
-
-    )
-
-    # message length (short/medium/long)
+    # Word count
     word_count = len(str(message.content).split())
 
+    # Message length
     if word_count <= 5:
         length = "short"
 
@@ -66,6 +19,58 @@ def preprocess(message):
     else:
         length = "long"
 
+    # Sender
+    observations.append(
+
+        Observation(
+
+            category="metadata",
+            name="sender",
+            value=message.sender,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+
+        )
+
+    )
+
+    # Receiver
+    observations.append(
+
+        Observation(
+
+            category="metadata",
+            name="receiver",
+            value=message.receiver,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+
+        )
+
+    )
+
+    # Word Count
+    observations.append(
+
+        Observation(
+
+            category="metadata",
+            name="word_count",
+            value=word_count,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+
+        )
+
+    )
+
+    # Message Length
     observations.append(
 
         Observation(
@@ -74,6 +79,7 @@ def preprocess(message):
             name="message_length",
             value=length,
             source=message.sender,
+            origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
 
@@ -81,7 +87,7 @@ def preprocess(message):
 
     )
 
-    # content length
+    # Content Length
     observations.append(
 
         Observation(
@@ -90,6 +96,7 @@ def preprocess(message):
             name="content_length",
             value=len(str(message.content)),
             source=message.sender,
+            origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
 
@@ -97,7 +104,7 @@ def preprocess(message):
 
     )
 
-    # message type
+    # Message Type
     observations.append(
 
         Observation(
@@ -106,6 +113,7 @@ def preprocess(message):
             name="message_type",
             value=message.message_type,
             source=message.sender,
+            origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
 
@@ -113,7 +121,7 @@ def preprocess(message):
 
     )
 
-    # platform
+    # Platform
     observations.append(
 
         Observation(
@@ -122,6 +130,7 @@ def preprocess(message):
             name="platform",
             value=message.platform,
             source=message.sender,
+            origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
 
@@ -146,5 +155,4 @@ if __name__ == "__main__":
         print("\nOBSERVATIONS")
 
         for observation in observations:
-
             print(observation)
