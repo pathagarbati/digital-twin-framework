@@ -1,3 +1,5 @@
+import re
+
 from src.knowledge.observation import Observation
 from src.preprocessor.loader import load_json
 
@@ -6,8 +8,10 @@ def preprocess(message):
 
     observations = []
 
+    content = str(message.content)
+
     # Word count
-    word_count = len(str(message.content).split())
+    word_count = len(content.split())
 
     # Message length
     if word_count <= 5:
@@ -19,11 +23,35 @@ def preprocess(message):
     else:
         length = "long"
 
+    # Uppercase detection
+    contains_uppercase = any(
+        character.isupper()
+        for character in content
+    )
+
+    # Question detection
+    contains_question = "?" in content
+
+    # Number detection
+    contains_number = any(
+        character.isdigit()
+        for character in content
+    )
+
+    # URL detection
+    contains_url = bool(
+
+        re.search(
+            r"https?://|www\.",
+            content
+        )
+
+    )
+
     # Sender
     observations.append(
 
         Observation(
-
             category="metadata",
             name="sender",
             value=message.sender,
@@ -31,7 +59,6 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -40,7 +67,6 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="receiver",
             value=message.receiver,
@@ -48,7 +74,6 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -57,7 +82,6 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="word_count",
             value=word_count,
@@ -65,7 +89,6 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -74,7 +97,6 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="message_length",
             value=length,
@@ -82,7 +104,6 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -91,15 +112,13 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="content_length",
-            value=len(str(message.content)),
+            value=len(content),
             source=message.sender,
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -108,7 +127,6 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="message_type",
             value=message.message_type,
@@ -116,7 +134,6 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
-
         )
 
     )
@@ -125,7 +142,6 @@ def preprocess(message):
     observations.append(
 
         Observation(
-
             category="metadata",
             name="platform",
             value=message.platform,
@@ -133,7 +149,66 @@ def preprocess(message):
             origin=message.platform,
             conversation_id=message.conversation_id,
             timestamp=message.timestamp
+        )
 
+    )
+
+    # Contains Uppercase
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_uppercase",
+            value=contains_uppercase,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    # Contains Question
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_question",
+            value=contains_question,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    # Contains Number
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_number",
+            value=contains_number,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
+        )
+
+    )
+
+    # Contains URL
+    observations.append(
+
+        Observation(
+            category="content",
+            name="contains_url",
+            value=contains_url,
+            source=message.sender,
+            origin=message.platform,
+            conversation_id=message.conversation_id,
+            timestamp=message.timestamp
         )
 
     )
